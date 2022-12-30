@@ -70,6 +70,10 @@ function showSuggestions(list){
 
 function do_search( action ) {
 	var search_term = $("#search_term").val();
+	if ( search_term.trim().length < 4 ) {
+		alert( "write at least 4 characters" );
+		return;
+	}
 	$.blockUI({ message: null });
 	$.ajax( {
 		type:'post',
@@ -135,3 +139,49 @@ function disable_prev( val ) {
 	$("#btn_prev1").prop('disabled', val);
 	$("#btn_prev2").prop('disabled', val);
 }
+
+function get_available_dates() {
+	$.ajax( {
+		type:'post',
+		url:'get_results.php',		
+		data:{
+			action: "get_available_dates"
+		},
+		success:function(response) {
+			if ( response != "" ) {
+				availableDates = JSON.parse( response );
+			}
+		}
+	} );	
+}
+
+$("#divDatePicker").hide();
+
+$("#btn_calendar").click(function(){
+	$("#divDatePicker").toggle();
+}); 
+
+var availableDates;
+get_available_dates();
+
+$("#divDatePicker").datepicker({
+	dateFormat: 'yy-mm-dd',
+	onSelect: function(value, date) { 
+		//chose date
+		$("#search_term").val( $("#search_term").val() + value );
+		$("#divDatePicker").hide(); 
+	},
+	beforeShowDay: function(d) {        
+        var year = d.getFullYear(),
+            month = ("0" + (d.getMonth() + 1)).slice(-2),
+            day = ("0" + (d.getDate())).slice(-2);
+
+        var formatted = year + '-' + month + '-' + day;
+
+        if ($.inArray(formatted, availableDates) != -1) {
+            return [true, "","Available"]; 
+        } else{
+            return [false,"","unAvailable"]; 
+        }
+    }
+});		
