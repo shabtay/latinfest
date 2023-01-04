@@ -2,7 +2,7 @@
 const searchWrapper = document.querySelector(".search-input");
 const inputBox = searchWrapper.querySelector("input");
 const suggBox = searchWrapper.querySelector(".autocom-box");
-const icon = searchWrapper.querySelector(".icon");
+const icon = searchWrapper.querySelector(".icon_search");
 let linkTag = searchWrapper.querySelector("a");
 let webLink;
 
@@ -14,14 +14,10 @@ inputBox.addEventListener( "keypress", function( event ) {
 
 // if user press any key and release
 inputBox.onkeyup = (e)=>{
-	return;
     let userData = e.target.value; //user enetered data
     let emptyArray = [];
     if(userData){
         icon.onclick = ()=>{
- //           webLink = `https://www.google.com/search?q=${userData}`;
- //           linkTag.setAttribute("href", webLink);
- //           linkTag.click();
 			do_search();
         }
         emptyArray = suggestions.filter((data)=>{
@@ -38,7 +34,7 @@ inputBox.onkeyup = (e)=>{
         let allList = suggBox.querySelectorAll("li");
         for (let i = 0; i < allList.length; i++) {
             //adding onclick attribute in all li tag
-            allList[i].setAttribute("onclick", "select(this);do_search()");
+            allList[i].setAttribute("onclick", "select(this);");
         }
     }else{
         searchWrapper.classList.remove("active"); //hide autocomplete box
@@ -47,11 +43,8 @@ inputBox.onkeyup = (e)=>{
 
 function select(element){
     let selectData = element.textContent;
-    inputBox.value = selectData;
+    inputBox.value = selectData + " ";
     icon.onclick = ()=>{
-        //webLink = `https://www.google.com/search?q=${selectData}`;
-        //linkTag.setAttribute("href", webLink);
-        //linkTag.click();
 		do_search();
     }
     searchWrapper.classList.remove("active");
@@ -68,12 +61,23 @@ function showSuggestions(list){
     suggBox.innerHTML = listData;
 }
 
-function do_search( action ) {
+function do_search() {
+	$("#errors").hide();
+	
 	var search_term = $("#search_term").val();
 	if ( search_term.trim().length < 4 ) {
-		alert( "write at least 4 characters" );
+		$("#errors").show();
+		$("#errors").html( "Error: Search must contains at least 4 characters" );
+		setTimeout( function() { $("#errors").hide(); $("#errors").html( "write at least 4 characters" ); }, 4000 );
+
 		return;
 	}
+	$("#search").val( search_term );
+	$("#search_form").submit();
+}
+
+function do_search_post() {
+	var search_term = $("#search_term").val();
 	$.blockUI({ message: null });
 	$.ajax( {
 		type:'post',
@@ -155,14 +159,52 @@ function get_available_dates() {
 	} );	
 }
 
+function get_search_terms() {
+	$.ajax( {
+		type:'post',
+		url:'get_results.php',		
+		data:{
+			action: "get_search_terms"
+		},
+		success:function(response) {
+			if ( response != "" ) {
+				suggestions = JSON.parse( response );
+			}
+		}
+	} );	
+}
+
 $("#divDatePicker").hide();
 
 $("#btn_calendar").click(function(){
 	$("#divDatePicker").toggle();
 }); 
 
+$("#btn_clear").click(function(){
+	$("#search_term").val('');
+}); 
+
 var availableDates;
-get_available_dates();
+let suggestions;
+$( document ).ready(function() { 
+	get_available_dates();
+	get_search_terms();
+	
+	$("#tips").accordion({ header: "h3", collapsible: true, active: false });
+	
+	$('.tip').on('click', function(e) {
+		$("#search_term").val( $("#search_term").val() + ( e.target.innerHTML ) + " " );
+	});
+
+	setTimeout( function() {
+		var today = new Date();
+		var dd = String(today.getDate()).padStart(2, '0');
+		var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+		var yyyy = today.getFullYear();
+		
+		$("#divDatePicker").datepicker( "setDate", availableDates[0] );
+	}, 1000 );
+});
 
 $("#divDatePicker").datepicker({
 	dateFormat: 'yy-mm-dd',
@@ -185,3 +227,22 @@ $("#divDatePicker").datepicker({
         }
     }
 });		
+
+$( function() {
+	$( "#dialog" ).dialog({
+		autoOpen: false,
+			show: {
+			effect: "blind",
+			duration: 1000
+		},
+		hide: {
+			effect: "blind",
+			duration: 1000
+		},
+		modal: true
+	});
+
+	$( "#help" ).on( "click", function() {
+		$( "#dialog" ).dialog( "open" );
+	});
+} );

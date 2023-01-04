@@ -7,7 +7,6 @@
 }
 body{
   background: #fff;
-  padding: 0 20px;
 }
 html,body {
     height:100%;
@@ -18,7 +17,7 @@ html,body {
 }
 .wrapper{
   max-width: 50%;
-  margin: 50px auto;
+  margin: 20px auto;
   text-align: center;
 }
 
@@ -87,13 +86,13 @@ html,body {
 	right: 35px;
 }
 
-.search-input .world{
+.search-input .clear{
 	right: 70px;
 }
 
 img.logo {
-	width: 30%;
-	align: middle;
+	width: 35%;
+	margin-bottom: 10px;
 }
 
 hr {
@@ -173,6 +172,7 @@ div.result-stats {
     padding-bottom: 20px;
     padding-right: 8px;
 	color: #70757a;
+	font-size: 14px;
 }
 
 .btn {
@@ -187,14 +187,102 @@ div.result-stats {
 }
 
 span.last_update {
-	font-size: 12px;
+	font-size: 14px;
 	float: right
+}
+
+div#errors {
+	color: red;
+	font-size: 12px;
+	font-weight: bold;
+	margin-top: 5px;
+}
+
+img.help  {
+	float: right;    
+	margin: 0 15px 0 0;
+	display: none;
+}
+
+div.dialog {
+	font-size: 12px;
+}
+
+.popular_searches ul {
+	padding: 10px;
+}
+
+.popular_searches ul li {
+	display: inline-block;
+	margin: 5px;
+	padding: 10px;
+	vertical-align: top;
+}
+
+.popular_searches ul li span {
+	margin: 0 10px;
+	padding: 5px;
+	white-space: nowrap;
+} 		
+
+.popular_searches {
+	text-align: center;
+	width: 100%;
+	font-size: 14px;
+	padding: 15px;
+}
+
+legend {
+	font-size: 16px;
+}
+
+fieldset {
+    border: 1px solid #e8e8e8;
+}
+
+.ui-accordion .ui-accordion-header {
+	cursor: pointer;
+	font-size: 10px;
+	width: 96.5%;
+}
+
+.ui-accordion-content {
+	width: 96.5%;
+}
+
+h3 {
+	font-weight: normal;
+	font-size: 12px;
+}
+
+span.tip {
+	line-height: 30px;
+	padding: 0px 10px 0px 10px;
+	border: 1px dashed #a1a1a1;
+	margin-right: 20px;
+	background: #e8e8e8;
+	font-size: 12px;
+	border-radius: 25px;
+	cursor: pointer;
+	color: #909090;
+	word-break:break-all;
+	white-space: nowrap;
+}
+
+span.tip:hover {
+	background: #b8b8b8;
+	color: #fff;
+}
+
+div.tips {
+	width: 100%;
+	margin: 10px;
 }
 
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */
 	.wrapper{
-		max-width: 100%;
+		max-width: 90%;
 	}
 
 	a.url {
@@ -215,5 +303,17 @@ span.last_update {
 	
 	div.result_block {
 		font-size: 12px;
+	}
+	.popular_searches {
+		font-size: 12px;
+	}
+	legend {
+		font-size: 12px;
+	}
+	img.logo {
+		width: 45%;
+	}
+	img.help  {
+		display: none;
 	}
 }
